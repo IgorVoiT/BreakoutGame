@@ -8,20 +8,26 @@
 
 /* Begin PBXBuildFile section */
 		785C46CB1E0ED99D0032D39F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785C46CA1E0ED99D0032D39F /* AppDelegate.swift */; };
-		785C46CD1E0ED99D0032D39F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785C46CC1E0ED99D0032D39F /* ViewController.swift */; };
 		785C46D01E0ED99D0032D39F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 785C46CE1E0ED99D0032D39F /* Main.storyboard */; };
 		785C46D21E0ED99D0032D39F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 785C46D11E0ED99D0032D39F /* Assets.xcassets */; };
 		785C46D51E0ED99D0032D39F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 785C46D31E0ED99D0032D39F /* LaunchScreen.storyboard */; };
+		785C46DE1E0EDA530032D39F /* BreakoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785C46DD1E0EDA530032D39F /* BreakoutView.swift */; };
+		785C46E01E0EDA600032D39F /* GameVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785C46DF1E0EDA600032D39F /* GameVC.swift */; };
+		789BA3DF1E5C777E0097A36D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 789BA3DE1E5C777E0097A36D /* Extensions.swift */; };
+		78C8E6991E5B321A0076A6D5 /* GameObjectsBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78C8E6981E5B321A0076A6D5 /* GameObjectsBehavior.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		785C46C71E0ED99D0032D39F /* BreakoutGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreakoutGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		785C46CA1E0ED99D0032D39F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		785C46CC1E0ED99D0032D39F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		785C46CF1E0ED99D0032D39F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		785C46D11E0ED99D0032D39F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		785C46D41E0ED99D0032D39F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		785C46D61E0ED99D0032D39F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		785C46DD1E0EDA530032D39F /* BreakoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreakoutView.swift; sourceTree = "<group>"; };
+		785C46DF1E0EDA600032D39F /* GameVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameVC.swift; sourceTree = "<group>"; };
+		789BA3DE1E5C777E0097A36D /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		78C8E6981E5B321A0076A6D5 /* GameObjectsBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameObjectsBehavior.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +60,25 @@
 		785C46C91E0ED99D0032D39F /* BreakoutGame */ = {
 			isa = PBXGroup;
 			children = (
-				785C46CA1E0ED99D0032D39F /* AppDelegate.swift */,
-				785C46CC1E0ED99D0032D39F /* ViewController.swift */,
+				785C46DC1E0ED9C70032D39F /* Supporting Files */,
 				785C46CE1E0ED99D0032D39F /* Main.storyboard */,
+				785C46DD1E0EDA530032D39F /* BreakoutView.swift */,
+				78C8E6981E5B321A0076A6D5 /* GameObjectsBehavior.swift */,
+				789BA3DE1E5C777E0097A36D /* Extensions.swift */,
+				785C46DF1E0EDA600032D39F /* GameVC.swift */,
+			);
+			path = BreakoutGame;
+			sourceTree = "<group>";
+		};
+		785C46DC1E0ED9C70032D39F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				785C46CA1E0ED99D0032D39F /* AppDelegate.swift */,
 				785C46D11E0ED99D0032D39F /* Assets.xcassets */,
 				785C46D31E0ED99D0032D39F /* LaunchScreen.storyboard */,
 				785C46D61E0ED99D0032D39F /* Info.plist */,
 			);
-			path = BreakoutGame;
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -91,7 +108,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Игорь";
 				TargetAttributes = {
 					785C46C61E0ED99D0032D39F = {
@@ -137,8 +154,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				785C46CD1E0ED99D0032D39F /* ViewController.swift in Sources */,
+				789BA3DF1E5C777E0097A36D /* Extensions.swift in Sources */,
+				78C8E6991E5B321A0076A6D5 /* GameObjectsBehavior.swift in Sources */,
 				785C46CB1E0ED99D0032D39F /* AppDelegate.swift in Sources */,
+				785C46E01E0EDA600032D39F /* GameVC.swift in Sources */,
+				785C46DE1E0EDA530032D39F /* BreakoutView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,6 +202,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -232,6 +253,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -302,6 +324,7 @@
 				785C46DB1E0ED99D0032D39F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
