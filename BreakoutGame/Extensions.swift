@@ -53,7 +53,7 @@ extension UIDynamicItemBehavior {
 
 extension CGPoint {
     var angle: CGFloat {
-        get { return CGFloat(atan2(self.x, self.y)) }
+        get { return CGFloat(atan2(self.y, self.x)) }
     }
     var magnitude: CGFloat {
         get { return CGFloat(sqrt(self.x*self.x + self.y*self.y)) }
@@ -73,6 +73,9 @@ extension Int {
     }
 }
 
+prefix func -(left: CGPoint) -> CGPoint {
+    return CGPoint(x: -left.x, y: -left.y)
+}
 
 func -(left: CGPoint, right: CGPoint) -> CGPoint {
     return CGPoint(x: left.x-right.x, y: left.y-right.y)

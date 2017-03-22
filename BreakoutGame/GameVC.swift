@@ -12,13 +12,14 @@ class GameVC: UIViewController, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var gameView: BreakoutView!{
         didSet {
-            let moveGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(moveRacket))
-            let pushBallGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(launchBall))
-            moveGestureRecognizer.delegate = self
+            // let moveGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(moveRacket))
+            let pushBallGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(launchBall))
+            // moveGestureRecognizer.delegate = self
             pushBallGestureRecognizer.delegate = self
-            gameView.addGestureRecognizer(moveGestureRecognizer)
+            //gameView.addGestureRecognizer(moveGestureRecognizer)
             gameView.addGestureRecognizer(pushBallGestureRecognizer)
             gameView.overallBehavior.hitBlock = self.ballHitBlock
+            gameView.overallBehavior.moveBlock = self.moveBlock
         }
     }
     
@@ -41,11 +42,15 @@ class GameVC: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    func launchBall(recognizer: UITapGestureRecognizer) {
-        recognizer.numberOfTapsRequired = 2
-
-        gameView.pushBall(magnitude: 0.2, angle: 1)
-        
+    func launchBall(recognizer: UIPanGestureRecognizer) {
+        recognizer.maximumNumberOfTouches = 1
+        if recognizer.state == .ended && recognizer.translation(in: gameView).y > 0  {
+            let touchPoint = recognizer.location(in: gameView)
+            let resultAngle = gameView.ball.frame.origin - touchPoint
+            if resultAngle.angle > Constanst.maxLeftAngle && resultAngle.angle < Constanst.maxRightAngle {
+                gameView.pushBall(magnitude: 0.2, angle: resultAngle.angle)
+            }
+        }
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -59,7 +64,7 @@ class GameVC: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         gameView.addBlocks()
-        gameView.addRacket()
+        //  gameView.addRacket()
         gameView.addBall()
         gameView.animating = true
     }
@@ -71,12 +76,18 @@ class GameVC: UIViewController, UIGestureRecognizerDelegate {
     
     func ballHitBlock(_ behaviour: UICollisionBehavior, _ ball: UIView, _ blockIndex: Int)
     {
-       gameView.removeBlockFromGame(index: blockIndex)
-        
+        gameView.removeBlockFromGame(index: blockIndex)
     }
     
+    func moveBlock(_ behaviour: UICollisionBehavior) {
+        gameView.moveBlocksDown()
+    }
     
-    
+    struct Constanst {
+        static let maxLeftAngle: CGFloat = 0.2
+        static let maxRightAngle: CGFloat = 3
+        
+    }
     
     /*
      // MARK: - Navigation

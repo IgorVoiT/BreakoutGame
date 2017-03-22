@@ -13,14 +13,12 @@ class BreakoutView: UIView {
     
     private lazy var animator: UIDynamicAnimator = UIDynamicAnimator(referenceView: self)
     private var racket : UIView = UIView()
-    private var ball : UIView = UIView()
-    
-    private var blockSize: CGSize {
-        let size = bounds.size.width / CGFloat(maxBlocksPerRow)
-        return CGSize(width: size, height: size)
-    }
+    var ball : UIView = UIView()
     
     let overallBehavior = GameObjectsBehavior()
+    
+    var MoveTimer : Timer? = nil
+    var blocks = [Int : UIView]()
     var ballIsLaunched: Bool = false
     var animating: Bool  = false {
         didSet {
@@ -31,26 +29,29 @@ class BreakoutView: UIView {
             }
         }
     }
-    var MoveTimer : Timer? = nil
     
-    var blocks = [Int : UIView]()
     
-    private let totalBlocks = 35
-    private let maxBlocksPerRow = 14
-    private let spaceForBlock = CGFloat(4)
+    private var blockSize: CGSize {
+        let size = (bounds.size.width - (bounds.size.width/10)) / CGFloat(maxBlocksPerRow)
+        return CGSize(width: size, height: size)
+    }
+    private let totalBlocks = 48
+    private let maxBlocksPerRow = 12
+    private var spaceForBlock: CGFloat {
+        return CGFloat((bounds.size.width/10)/CGFloat(maxBlocksPerRow + 1))
+    }
     
     func addBlocks() {
         
-        let startingSpaceForX = CGFloat((Double(bounds.size.width) - (Double(maxBlocksPerRow - 2) * Double(blockSize.width))) - Double(maxBlocksPerRow - 2))/2
-        var xPositionCounter: CGFloat = startingSpaceForX
-        var yPositionCounter: CGFloat = 0
+        var xPositionCounter: CGFloat = spaceForBlock
+        var yPositionCounter: CGFloat = spaceForBlock
         var rowCounter: CGFloat = 1
         var blocksCounter = totalBlocks
         
         while blocksCounter > 0 {
-            if xPositionCounter >= bounds.size.width - startingSpaceForX - rowCounter * blockSize.width {
-                yPositionCounter = (blockSize.height * rowCounter) + spaceForBlock * rowCounter
-                xPositionCounter = blockSize.width * rowCounter + startingSpaceForX + rowCounter
+            if blocksCounter%maxBlocksPerRow == 0 {
+                yPositionCounter = (blockSize.height * rowCounter) + (spaceForBlock * rowCounter)
+                xPositionCounter = spaceForBlock
                 rowCounter += 1
             }
             
@@ -61,14 +62,25 @@ class BreakoutView: UIView {
             
             let block = UIView()
             block.frame = blockFrame
-            block.backgroundColor = UIColor.black
+            block.backgroundColor = UIColor.brown
             
             blocks.updateValue(block, forKey: blocksCounter)
             overallBehavior.addBoundary(boundary: UIBezierPath(rect: block.frame), name: String(blocksCounter))
+            addBottomBoundary()
             
             addSubview(block)
             
             blocksCounter -= 1
+        }
+    }
+    
+    
+    func moveBlocksDown() {
+        for block in blocks {
+            UIView.animate(withDuration: 0.3, animations: {
+                block.value.frame.origin.y = block.value.frame.origin.y + self.blockSize.height
+            })
+            overallBehavior.addBoundary(boundary: UIBezierPath(rect: block.value.frame), name: String(block.key))
         }
     }
     
@@ -82,7 +94,6 @@ class BreakoutView: UIView {
                     block.removeFromSuperview()
                 }
         })
-        
     }
     
     
@@ -92,25 +103,23 @@ class BreakoutView: UIView {
             blocks.removeValue(forKey: index)
             removeBlockFromView(block: block)
         }
-        
     }
     
     func addBall() {
-        let ballSize = CGSize(width: 14, height: 14)
+        let ballSize = CGSize(width: 12, height: 12)
         let ballOrigin = CGPoint(x: bounds.width/2 - ballSize.width/2, y: bounds.height - (4 * ballSize.height))
         ball.frame = CGRect(origin: ballOrigin, size: ballSize)
-        ball.layer.cornerRadius = 7
-        ball.backgroundColor = UIColor.darkGray
-        
+        ball.layer.cornerRadius = 6
+        ball.backgroundColor = UIColor.orange
         
         overallBehavior.addBallBehavior(item: ball)
         addSubview(ball)
     }
     
     func pushBall(magnitude: CGFloat, angle: CGFloat) {
-        if !ballIsLaunched {
-            overallBehavior.launchBall(ball: ball, magnitude: 0.2, angle: 1)
-        }
+        //if !ballIsLaunched {
+        overallBehavior.launchBall(ball: ball, magnitude: 0.10, angle: angle)
+        //}
     }
     
     func addRacket()  {
@@ -121,7 +130,7 @@ class BreakoutView: UIView {
         
         racket.frame = CGRect(origin: origin, size: size)
         racket.backgroundColor = UIColor.brown
-        overallBehavior.addBoundary(boundary: boundary, name: "racket")
+        overallBehavior.addBoundary(boundary: boundary, name: Constants.racketBoundary)
         
         addSubview(racket)
     }
@@ -130,19 +139,28 @@ class BreakoutView: UIView {
         MoveTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true, block: { [unowned self] (timer: Timer) in
             if (self.racket.frame.origin.x >= 0) {
                 self.racket.frame.origin = CGPoint(x: self.racket.frame.origin.x - 5, y: self.racket.frame.origin.y)
-                self.overallBehavior.addBoundary(boundary: UIBezierPath.init(rect: self.racket.frame), name: "racket")
+                self.overallBehavior.addBoundary(boundary: UIBezierPath.init(rect: self.racket.frame), name: Constants.racketBoundary)
             }
         })
-        
     }
     
     func moveRacketRight() {
         MoveTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true, block: { [unowned self] (timer: Timer) in
             if (self.racket.frame.origin.x + self.racket.frame.size.width <= self.bounds.width) {
                 self.racket.frame.origin = CGPoint(x: self.racket.frame.origin.x + 5, y: self.racket.frame.origin.y)
-                self.overallBehavior.addBoundary(boundary: UIBezierPath.init(rect: self.racket.frame), name: "racket")
+                self.overallBehavior.addBoundary(boundary: UIBezierPath.init(rect: self.racket.frame), name: Constants.racketBoundary)
             }
         })
+    }
+    
+    func addBottomBoundary() {
+        overallBehavior.addBoundary(boundary: UIBezierPath.init(rect: CGRect(x: 0, y: self.bounds.maxY, width: self.bounds.width, height: 1)), name: Constants.bottomBoundry)
+    }
+    
+    struct Constants {
+        static let bottomBoundry = "Bottom Display Boundary"
+        static let racketBoundary = "Racket Boundary "
+        
     }
     
 }

@@ -12,6 +12,7 @@ class GameObjectsBehavior: UIDynamicBehavior, UICollisionBehaviorDelegate  {
     
     
     var hitBlock : ((_ behaviour: UICollisionBehavior, _ ball: UIView, _ blockIndex: Int)->())?
+    var moveBlock : ((_ behaviour: UICollisionBehavior)->())?
     
     private var ballAngle: CGFloat = 10
     
@@ -20,6 +21,7 @@ class GameObjectsBehavior: UIDynamicBehavior, UICollisionBehaviorDelegate  {
         gravity.magnitude = 0
         return gravity
     }()
+    
     private lazy var collider: UICollisionBehavior  = {
         let collider = UICollisionBehavior()
         collider.translatesReferenceBoundsIntoBoundary = true
@@ -72,6 +74,7 @@ class GameObjectsBehavior: UIDynamicBehavior, UICollisionBehaviorDelegate  {
         let pushBehaiour = UIPushBehavior(items: [ball], mode: .instantaneous)
         pushBehaiour.magnitude = -magnitude
         pushBehaiour.angle = angle
+  
         
         pushBehaiour.action = { [weak pushBehaiour] in
             if !pushBehaiour!.active { self.removeChildBehavior(pushBehaiour!) }
@@ -83,26 +86,18 @@ class GameObjectsBehavior: UIDynamicBehavior, UICollisionBehaviorDelegate  {
     //change ball angle if stack
     func ballIsStuck(ball: UIDynamicItem) {
         let angle = ballBehavior.linearVelocity(for: ball).angle
-        let xVelocity = CGFloat(Int.random(min: -100, 100))
-        let yVelocity = CGFloat(Int.random(min: -250, -100))
+        let yVelocity = CGFloat(Int.random(min: -100, 100))
         if ballBehavior.linearVelocity(for: ball) != CGPoint(x: 0, y: 0) {
             switch angle {
             case -0.01 ... 0.01:
-                ballBehavior.addLinearVelocity(CGPoint(x: xVelocity, y: 0), for: ball)
-            case 3.13 ... 3.15:
-                ballBehavior.addLinearVelocity(CGPoint(x: xVelocity + 100, y: 0), for: ball)
-            case -3.15 ... -3.13:
-                ballBehavior.addLinearVelocity(CGPoint(x: xVelocity - 100, y: 0), for: ball)
-            case -1.58 ... -1.57:
                 fallthrough
-            case 1.57 ... 1.58:
+            case 3.13 ... 3.15:
                 ballBehavior.addLinearVelocity(CGPoint(x: 0, y: yVelocity), for: ball)
             default:
                 break
             }
         }
     }
-    
     
     //velocity
     func addVelocity(velocity: CGPoint, item: UIDynamicItem) {
@@ -115,9 +110,18 @@ class GameObjectsBehavior: UIDynamicBehavior, UICollisionBehaviorDelegate  {
     
     
     func collisionBehavior(_ behavior: UICollisionBehavior, beganContactFor item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying?, at p: CGPoint) {
-        ballBehavior.limitLinearVelocity(min: 500, max: 600, forItem: item)
+        if getVelocity(item: item) != CGPoint(x: 0, y: 0) {
+            if identifier as? String == "Bottom Display Boundary" {
+                let itemVelocity = getVelocity(item: item)
+                addVelocity(velocity: -itemVelocity, item: item)
+                moveBlock?(behavior)
+            }
+        }
+    }
+    
+    func collisionBehavior(_ behavior: UICollisionBehavior, endedContactFor item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying?) {
+        ballBehavior.limitLinearVelocity(min: 500, max: 1100, forItem: item)
         ballIsStuck(ball: item)
-        
         if let index = identifier as? String {
             if let blockIndex = Int(index) {
                 hitBlock?(behavior,item as! UIView,blockIndex)
@@ -126,8 +130,4 @@ class GameObjectsBehavior: UIDynamicBehavior, UICollisionBehaviorDelegate  {
         
     }
     
-    
-    func collisionBehavior(_ behavior: UICollisionBehavior, beganContactFor item1: UIDynamicItem, with item2: UIDynamicItem, at p: CGPoint) {
-        
-    }
 }
